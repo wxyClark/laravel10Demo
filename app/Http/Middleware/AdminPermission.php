@@ -25,9 +25,7 @@ class AdminPermission
         $userId = Auth::id();
 
         $isAdmin = app(PermissionService::class)->getIsAdmin($userId);
-
         if (!$isAdmin) {
-            // 如果没有权限，返回当前页面并显示错误消息
             return back()->withErrors(['permission' => '您没有权限访问此页面！']);
         }
 

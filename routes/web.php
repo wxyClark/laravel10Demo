@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Dev\DevController;
+use App\Http\Controllers\Dev\QueryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,18 +13,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth', 'admin.permission'])->group(function () {
-    Route::get('/dev', function () {
-        return view('dev.index');
-    })->name('dev');
-    Route::post('/dev/commonList', function () {
-        dd('commonList TODO');
-    })->name('dev.commonList');
-    Route::post('/dev/exportList', function () {
-        dd('exportList TODO');
-    })->name('dev.exportList');
-});
+//  DEV
+Route::middleware(['auth', 'admin.permission'])->namespace('Dev')->group(function () {
+    Route::get('/dev', [DevController::class, 'query'])->name('dev');
 
+    Route::post('/query/list', [QueryController::class, 'list'])->name('query.list');
+    Route::post('/query/export', [QueryController::class, 'export'])->name('query.export');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
