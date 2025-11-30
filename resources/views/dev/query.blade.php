@@ -308,6 +308,12 @@ For example：SELECT id, name, email FROM users limit 10"
                     executeBtn.innerHTML = '<i class="fas fa-play mr-2"></i> 执行查询';
                     executeBtn.disabled = false;
 
+                    // 检查status字段
+                    if (data.status === false) {
+                        alert(data.error_msg || '查询失败');
+                        return;
+                    }
+
                     // 处理返回的数据
                     if (data.list && data.list.length > 0) {
                         displayResults(data);

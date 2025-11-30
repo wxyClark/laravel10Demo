@@ -2,7 +2,6 @@
 
 namespace App\Services\Dev;
 
-
 use App\Enums\ErrorCodeEnums;
 use App\Repositories\Dev\QueryRepository;
 use Illuminate\Database\QueryException;
@@ -63,11 +62,10 @@ class QueryService
             //  检查表名是否运行访问
             $tables = $this->extractTables($sql);
             $intersect = array_intersect($this->exceptTables, $tables);
-
             if ($intersect) {
                 return [
                     'status' => false,
-                    'msg' => 'The following data table does not support access :'.implode(', ', $intersect),
+                    'error_msg' => 'The following data table does not support access :'.implode(', ', $intersect),
                 ];
             }
 
@@ -101,13 +99,14 @@ class QueryService
         } catch (QueryException $e) {
             // 捕获数据库查询异常
             $error = "SQL execution error: " . $e->getMessage();
+
         } catch (\Exception $e) {
             // 捕获其他异常
             $error = "System Error: " . $e->getMessage();
         }
         return $data ?? [
             'status' => false,
-            'error' => $error ?? '',
+            'error_msg' => $error ?? '',
         ];
     }
 
@@ -195,22 +194,36 @@ class QueryService
      */
     private function extractTables($sql)
     {
-        $tables = [];
-        $sql = strtoupper($sql);
+        $sql = preg_replace('/\s+/', ' ', $sql);
 
-        //  TODO  校验有问题，拟引入组件
+        $tableNames = [];
+        // 匹配 FROM 和 JOIN 后面的表名（包括别名）
+        $patterns = [
+            '/\bFROM\s+([^\s,()]+)(?:\s+AS\s+[^\s,()]+)?/i',
+            '/\bJOIN\s+([^\s,()]+)(?:\s+AS\s+[^\s,()]+)?/i'
+        ];
 
-        // 简单的表名提取（适用于大多数 SELECT 语句）
-        if (preg_match_all('/FROM\s+([a-zA-Z_][a-zA-Z0-9_]*)/i', $sql, $matches)) {
-            $tables = array_merge($tables, $matches[1]);
+        foreach ($patterns as $pattern) {
+            preg_match_all($pattern, $sql, $matches);
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $tableName) {
+                    // 过滤掉子查询和括号内容
+                    if (strpos($tableName, '(') === false &&
+                        !in_array(strtoupper($tableName), ['SELECT', 'WITH'])) {
+                        $tableNames[] = $tableName;
+                    }
+                }
+            }
         }
 
-        if (preg_match_all('/JOIN\s+([a-zA-Z_][a-zA-Z0-9_]*)/i', $sql, $matches)) {
-            $tables = array_merge($tables, $matches[1]);
+        foreach ($tableNames as $key => &$tableName) {
+            $tableNameArr = explode('.', $tableName);
+            $tableName = end($tableNameArr);
+            $tableName = trim($tableName, '`');
+            $tableName = strtolower($tableName);
         }
+        unset($tableName);
 
-        $tables = array_unique($tables);
-        array_map('strtolower', $tables);
-        return $tables;
+        return array_unique($tableNames);
     }
 }
