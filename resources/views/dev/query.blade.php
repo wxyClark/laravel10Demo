@@ -308,8 +308,12 @@ For example：SELECT id, name, email FROM users limit 10"
                 })
             })
                 .then(response => {
+                    // 访问频次限制
+                    if (response.status === 429) {
+                        throw new Error('The request is too frequent. Please try again later!');
+                    }
                     if (!response.ok) {
-                        throw new Error('网络响应错误');
+                        throw new Error('Network response error');
                     }
                     return response.json();
                 })
@@ -457,8 +461,12 @@ For example：SELECT id, name, email FROM users limit 10"
                 })
             })
                 .then(response => {
+                    // 访问频次限制
+                    if (response.status === 429) {
+                        throw new Error('The request is too frequent. Please try again later!');
+                    }
                     if (!response.ok) {
-                        throw new Error('网络响应错误');
+                        throw new Error('Network response error');
                     }
                     return response.json();
                 })
@@ -495,7 +503,7 @@ For example：SELECT id, name, email FROM users limit 10"
             }
 
             // 显示加载状态
-            exportExcelBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> 导出中...';
+            exportExcelBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Exporting...';
             exportExcelBtn.disabled = true;
 
             // 发送AJAX请求
@@ -511,8 +519,12 @@ For example：SELECT id, name, email FROM users limit 10"
                 })
             })
                 .then(response => {
+                    // 访问频次限制
+                    if (response.status === 429) {
+                        throw new Error('The request is too frequent. Please try again later!');
+                    }
                     if (!response.ok) {
-                        throw new Error('导出失败');
+                        throw new Error('Export failed');
                     }
                     return response.blob();
                 })
@@ -533,15 +545,15 @@ For example：SELECT id, name, email FROM users limit 10"
                     window.URL.revokeObjectURL(url);
 
                     // 恢复按钮状态
-                    exportExcelBtn.innerHTML = '<i class="fas fa-file-excel mr-2"></i> 导出 Excel';
+                    exportExcelBtn.innerHTML = '<i class="fas fa-file-excel mr-2"></i> Export Excel';
                     exportExcelBtn.disabled = false;
                 })
                 .catch(error => {
-                    console.error('错误:', error);
-                    alert('导出失败: ' + error.message);
+                    console.error('Error:', error);
+                    alert('Export failed: ' + error.message);
 
                     // 恢复按钮状态
-                    exportExcelBtn.innerHTML = '<i class="fas fa-file-excel mr-2"></i> 导出 Excel';
+                    exportExcelBtn.innerHTML = '<i class="fas fa-file-excel mr-2"></i> Export Excel';
                     exportExcelBtn.disabled = false;
                 });
         });
@@ -549,12 +561,12 @@ For example：SELECT id, name, email FROM users limit 10"
         // 导出JSON
         exportJsonBtn.addEventListener('click', function() {
             if (!currentSql) {
-                alert('请先执行查询');
+                alert('Please execute the query first');
                 return;
             }
 
             // 显示加载状态
-            exportJsonBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> 导出中...';
+            exportJsonBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Exporting...';
             exportJsonBtn.disabled = true;
 
             // 发送AJAX请求
@@ -571,7 +583,7 @@ For example：SELECT id, name, email FROM users limit 10"
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('导出失败');
+                        throw new Error('Export failed!');
                     }
                     return response.blob();
                 })
@@ -592,15 +604,15 @@ For example：SELECT id, name, email FROM users limit 10"
                     window.URL.revokeObjectURL(url);
 
                     // 恢复按钮状态
-                    exportJsonBtn.innerHTML = '<i class="fas fa-file-code mr-2"></i> 导出 JSON';
+                    exportJsonBtn.innerHTML = '<i class="fas fa-file-code mr-2"></i> Export JSON';
                     exportJsonBtn.disabled = false;
                 })
                 .catch(error => {
                     console.error('错误:', error);
-                    alert('导出失败: ' + error.message);
+                    alert('Export failed: ' + error.message);
 
                     // 恢复按钮状态
-                    exportJsonBtn.innerHTML = '<i class="fas fa-file-code mr-2"></i> 导出 JSON';
+                    exportJsonBtn.innerHTML = '<i class="fas fa-file-code mr-2"></i> Export JSON';
                     exportJsonBtn.disabled = false;
                 });
         });

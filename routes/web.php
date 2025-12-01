@@ -17,9 +17,8 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'admin.permission'])->namespace('Dev')->group(function () {
     Route::get('/dev', [DevController::class, 'query'])->name('dev');
 
-    Route::post('/query/list', [QueryController::class, 'list'])->name('query.list');
-    Route::post('/query/export', [QueryController::class, 'export'])->name('query.export');
-    Route::get('/query/test', [QueryController::class, 'test'])->name('query.test');
+    Route::post('/query/list', [QueryController::class, 'list'])->name('query.list')->middleware('throttle:1000,1');
+    Route::post('/query/export', [QueryController::class, 'export'])->name('query.export')->middleware('throttle:1000,1');
 });
 
 Route::middleware('auth')->group(function () {
