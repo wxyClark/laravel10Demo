@@ -154,8 +154,8 @@ class QueryService
             }
 
             //  获取表头
-            $first_sql = "SELECT * FROM ({$params['sql']}) as a LIMIT 1;";
-            $list = $pdo->query($first_sql)->fetch(\PDO::FETCH_OBJ);
+            $firstSql = "SELECT * FROM ({$params['sql']}) as a LIMIT 1;";
+            $list = $pdo->query($firstSql)->fetch(\PDO::FETCH_OBJ);
             $first = get_object_vars($list);
             $header = [];
             foreach ($first as $key => $value) {
@@ -239,8 +239,6 @@ class QueryService
             $firstItem = false;
 
             foreach ($list as $row) {
-                Log::error('1row', [$row]);
-                Log::error('2row', [get_object_vars($row)]);
                 fwrite($handle, json_encode(get_object_vars($row), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
             }
             $page++;

@@ -159,7 +159,7 @@ For example：SELECT id, name, email FROM users limit 10"
                                             <option value="10">10 records</option>
                                             <option value="20">20 records</option>
                                             <option value="50">50 records</option>
-                                            <option value="50">100 records</option>
+                                            <option value="100">100 records</option>
                                         </select>
                                     </div>
                                     <div id="page-size-error" class="mt-1 text-sm text-red-600 hidden"></div>
