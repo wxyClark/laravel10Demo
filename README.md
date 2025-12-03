@@ -2,7 +2,7 @@
 
 ## 基础环境
 
-* laravel10.x
+* laravel12.x
 * php8.2 及以上
 * mysql5.7 or 10.4.32-MariaDB
 
